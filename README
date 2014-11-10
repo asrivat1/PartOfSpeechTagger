@@ -21,6 +21,14 @@ c)
 i. The alpha value that represents the probability of all the ways to reach that sequence, the alpha value of the EOS character will be the probability of all possible parses of the sentence.
 ii. An H constituent represents a hot day on the day that corresponds to the depth of the consituent. H -> 1 C has the probability of p(1 | C) * p(C | H) since it needs to capture the probability of a cold day and 1 ice cream following a hot day. The probability of H -> ep translates to p(STOP | H). The approach on the right is in Chomsky Normal Form. Instead of having to compute p(H -> 1 C) which is a bit awkward, we can compute p(H -> EC C) = p(C | H) and p(1 | EC) = p(1 | C) which can be read directly from our table.
 
+
 Problem 2:
 ----------
+
+See vtag
+
+
+Problem 3:
+----------
+
 

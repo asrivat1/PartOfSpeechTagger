@@ -40,38 +40,70 @@ def test(fileName):
 
     # Initialize things
     mu = defaultdict(lambda: float('-inf'), {})
-    mu["###/0"] = 1.0
-    w = [None] * (len(data) + 1)
+    mu["###/0"] = math.log(1.0)
+    w = [None] * len(data)
     w[0] = "###"
-    t = [None] * (len(data) + 1)
-    t[0] = "###"
     backpointer = {}
+    actualTags = [None] * len(data)
+    logProb = {}
 
+    # Run Viterbi's algorithm
     for i in range(1, len(data)):
         # Remove \n character
         data[i] = data[i].rstrip("\n")
-        w[i] , t[i] = data[i].split("/")
+        w[i], actualTags[i] = data[i].split("/")
         for tc in tag_dict(w[i]):
             for tp in tag_dict(w[i - 1]):
                 # Add because we're using log prob
-                p = p_tt(tc, tp, w[i]) + p_wt(w[i], tc)
+                p = p_tt(tc, tp) + p_wt(w[i], tc)
                 mu_temp = mu["/".join((tp, str(i - 1)))] + p
-                if mu_temp > mu["/".join((tc, str(i)))]:
+                if mu_temp >= mu["/".join((tc, str(i)))]:
                     mu["/".join((tc, str(i)))] = mu_temp
+                    logProb["/".join((tc, str(i)))] = p
                     backpointer["/".join((tc, str(i)))] = tp
 
-    t[len(data)] = "###"
+    # Follow backpointers and store the best path in t
+    t = [None] * (len(data))
+    t[len(data) - 1] = "###"
+    totalProb = 0.0
     for j in range(1, len(data)):
         i = len(data) - j
         t[i - 1] = backpointer["/".join((t[i], str(i)))]
+        totalProb += logProb["/".join((t[i], str(i)))]
 
-    for i in range(0, len(t) - 1):
+    # Check accuracy
+    novelCorrect = 0.0
+    novelTotal = 0.0
+    knownCorrect = 0.0
+    knownTotal = 0.0
+    for i in range(0, len(w)):
+        # Ignore ###/###
+        if w[i] == "###":
+            continue
+        # Increment correct words and total
+        if actualTags[i] == t[i]:
+            if w[i] not in vocab:
+                novelCorrect += 1
+            else:
+                knownCorrect += 1
+        if w[i] not in vocab:
+            novelTotal += 1
+        else:
+            knownTotal += 1
+
+    # Print the results
+    for i in range(0, len(t)):
         print "%s/%s" % (w[i], t[i])
+    # If no novel words encountered, we are vacuously 100% accuracy
+    print "Tagging accuracy (Viterbi decoding): %.2f%% (known: %.2f%% novel: %.2f%%)" % \
+          (100 * (novelCorrect + knownCorrect) / (novelTotal + knownTotal),
+           100 * knownCorrect / knownTotal, 100 if novelTotal == 0 else 100 * novelCorrect / novelTotal)
+    print "Perplexity per Viterbi-tagged test word: %.3f" % math.exp(- totalProb / (len(w) - 1))
 
-def p_tt(t1, t2, w):
+def p_tt(t1, t2):
     numerator = count_tt["/".join((t1, t2))]
     denominator = 0
-    for t in tag_dict(w):
+    for t in ["###", "H", "C"]:
         denominator += count_tt["/".join((t, t2))]
     return math.log(float(numerator) / float(denominator))
 
