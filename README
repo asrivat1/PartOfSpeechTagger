@@ -1,2 +1,26 @@
 NLP_Assignment6
 ===============
+
+Problem 1:
+----------
+
+a)
+
+i. The new probability that day 1 is hot, or p(->H) is 0.491
+ii. If day 1 is 2 ice creams, p(->H) for day 2 is 0.977. With 1 ice cream, p(->) for day 2 is 0.918. So the modification only changes the probability of day 2 being hot by -0.059.
+iii. If we eat 2 ice creams on day 1, the final graph gives days 1-5 a probability of almost 1 of being hot. However, if we change it to 1 ice cream, the final graph gives day 1 a 0.0 probability of being hot, and days 2 and 3 have significantly reduced probabilities as well at 0.557 and 0.813 respectively.
+
+b)
+
+i. Before the change, days 11-13 in the initial graph have fairly high probabilites of being hot at 0.752, 0.856, and 0.779 respectively. After the change, they get reduced to 0.0, 0.441, and 0.441. Since we have changed our model to say that there is 0 change of a day being hot if there was 1 ice cream eaten, the probability of day 11 is brought all the way down, which in turn plays a large influence on days 12 and 13 especially since 14, 15, and 16 also have 0 probability.
+ii. The final graph is actually almost identical in both cases. This is because even without the bias of p(1|H) = 0, our model will eventually learn p(1|H) = 1.6E-4 which for all practical purposes has the same effect on the graph. Therefore by starting with p(1|H) = 0, we're actually not doing anything that the model would not do by itself after 10 iterations.
+iii. After 10 iterations with the new probabilities, p(1|H) is still 0. This is because at each step, p(1|H) is set equal to p(->H, 1) / p(->H) from the previous iteration. But since p(1|H) is 0, p(->H, 1) is also 0 at every iteration, so no matter what p(->H) is, p(1|H) will always be set to 0.
+
+c)
+
+i. The alpha value that represents the probability of all the ways to reach that sequence, the alpha value of the EOS character will be the probability of all possible parses of the sentence.
+ii. An H constituent represents a hot day on the day that corresponds to the depth of the consituent. H -> 1 C has the probability of p(1 | C) * p(C | H) since it needs to capture the probability of a cold day and 1 ice cream following a hot day. The probability of H -> ep translates to p(STOP | H). The approach on the right is in Chomsky Normal Form. Instead of having to compute p(H -> 1 C) which is a bit awkward, we can compute p(H -> EC C) = p(C | H) and p(1 | EC) = p(1 | C) which can be read directly from our table.
+
+Problem 2:
+----------
+
