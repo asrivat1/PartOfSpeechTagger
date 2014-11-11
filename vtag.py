@@ -9,11 +9,17 @@ from collections import defaultdict
 
 count_tt = defaultdict(int)
 count_wt = defaultdict(int)
+count = defaultdict(int)
 vocab = defaultdict(int)
+tag_dict = defaultdict(list)
+all_tags = {}
+sing_tt = defaultdict(int)
+sing_tw = defaultdict(int)
 
 # Find the counts from test data
 def train(fileName):
     data = file(fileName, "r")
+    data.readline()
     t_old = None
     for line in data:
         # Remove \n character
@@ -21,13 +27,31 @@ def train(fileName):
 
         # Increment count_wt
         count_wt[line] += 1
-        
-        # Increment count_tt and add to vocab
+        # Increment count_tt and count and add to vocab
         line = line.split("/")
+        count[line[1]] += 1
         vocab[line[0]] += 1
         if t_old is not None:
-            key = "/".join((line[1], t_old))
-            count_tt[key] += 1
+            count_tt["/".join((line[1], t_old))] += 1
+
+        # Add the tag to the dictionary if it's the first time
+        if count_wt["/".join((line[0], line[1]))] == 1:
+            tag_dict[line[0]].append(line[1])
+           
+        # Also update singleton counts appropriately
+        if count_tt["/".join((line[0], line[1]))] == 1:
+            sing_tt[line[t_old]] += 1
+        elif count_tt["/".join((line[0], line[1]))] == 2:
+            sing_tt[line[t_old]] -= 1
+
+        if count_wt["/".join((line[0], line[1]))] == 1:
+            sing_wt[line[1]] += 1
+        elif count_wt["/".join((line[0], line[1]))] == 2:
+            sing_wt[line[1]] -= 1
+
+        # Maintain a list of all tags we have seen 
+        if line[1] != "###":
+            all_tags[line[1]] = 1
 
         # Keep track of t_i-1
         t_old = line[1]
@@ -52,8 +76,8 @@ def test(fileName):
         # Remove \n character
         data[i] = data[i].rstrip("\n")
         w[i], actualTags[i] = data[i].split("/")
-        for tc in tag_dict(w[i]):
-            for tp in tag_dict(w[i - 1]):
+        for tc in tag_dict.get(w[i], all_tags.keys()):
+            for tp in tag_dict.get(w[i - 1], all_tags.keys()):
                 # Add because we're using log prob
                 p = p_tt(tc, tp) + p_wt(w[i], tc)
                 mu_temp = mu["/".join((tp, str(i - 1)))] + p
@@ -101,25 +125,21 @@ def test(fileName):
     print "Perplexity per Viterbi-tagged test word: %.3f" % math.exp(- totalProb / (len(w) - 1))
 
 def p_tt(t1, t2):
+    '''
     numerator = count_tt["/".join((t1, t2))]
-    denominator = 0
-    for t in ["###", "H", "C"]:
-        denominator += count_tt["/".join((t, t2))]
-    return math.log(float(numerator) / float(denominator))
+    denominator = count[t2]
+    return math.log(float(numerator + 1) / float(denominator + 1 + len(all_tags.keys())))
+    '''
+    numerator = count_tt["/".join((t1, t2))] + (1 + sing_tt(t1)) * p_tt_b(t2, t1)
+    denominator = count[t1] + 1 + sing_tt(t1)
 
 def p_wt(w_i, t):
+    if w_i == "###" and t == "###":
+        return 0
     numerator = count_wt["/".join((w_i, t))]
-    denominator = 0
-    for w in vocab:
-        denominator += count_wt["/".join((w, t))]
-    return math.log(float(numerator) / float(denominator))
+    denominator = count[t]
+    return math.log(float(numerator + 1) / float(denominator + len(vocab)))
 
-def tag_dict(w):
-    if w == "###":
-        return ["###"]
-    else:
-        return ["C", "H"]
-        
 def main():
     train(sys.argv[1])
     test(sys.argv[2])
