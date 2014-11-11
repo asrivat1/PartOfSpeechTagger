@@ -37,4 +37,17 @@ See vtag
 Problem 4:
 ----------
 
+After applying the one-count smoothing, I got the following results:
+
+Tagging accuracy (Viterbi decoding): 94.09% (known: 96.82% novel: 65.80%)
+Perplexity per Viterbi-tagged test word: 864.905
+
+This represents an improvement of 1.61 percentage points over the baseline in overall accuracy, 0.83 points in known word accuracy, and 9.73 points in novel word accuracy.
+
+We also improved by 712.594 in perplexity, which is very substantial.
+
+
+Problem 5:
+----------
+
 
