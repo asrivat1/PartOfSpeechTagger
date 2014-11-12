@@ -64,4 +64,60 @@ On the ice-cream set, I noticed that my implementation gives exactly the same ou
 Problem 6:
 ----------
 
+I get the following output after running on enraw with entrain25k:
 
+Tagging accuracy (Viterbi decoding): 94.17% (known: 96.54% seen: 62.86% novel: 65.65%)
+Perplexity per Viterbi-tagged test word: 960.147
+
+Iteration 0: Perplexity per untagged raw word: 1007.43
+
+Tagging accuracy (Viterbi decoding): 94.28% (known: 96.52% seen: 68.64% novel: 66.84%)
+Perplexity per Viterbi-tagged test word: 941.445
+
+Iteration 1: Perplexity per untagged raw word: 613.30
+
+Tagging accuracy (Viterbi decoding): 94.19% (known: 96.53% seen: 68.74% novel: 65.59%)
+Perplexity per Viterbi-tagged test word: 936.853
+
+Iteration 2: Perplexity per untagged raw word: 609.13
+
+Tagging accuracy (Viterbi decoding): 94.21% (known: 96.55% seen: 68.78% novel: 65.70%)
+Perplexity per Viterbi-tagged test word: 935.864
+
+Iteration 3: Perplexity per untagged raw word: 608.55
+
+a)
+
+Since we must start with a ###, we know that the total probability over all paths from 0 to 0 that end in state ### must be 1, since that's the only possible state to be in at word 0.
+
+Similarly we must end with a ###, so the total probability over all paths from n to n that end in state ### must be 1 as well.
+
+b)
+
+The Viterbi perplexity is higher because it is computed directly from the probability of getting that sentence with that particular tagging. The posterior perplexity comes from the probability of generating that sentence without regard to tagging (there is none). Since the sentence with the given tagging is a special case of the sentence, it makes sense that it would have a lower probability of being generated, and thus the Viterbi perplexity would be higher as a result.
+
+c)
+
+This would be cheating. We are not allowed to know anything about the test data in a way that could influence our predictions. If we included test data in V, we wouldn't even encounter any OOV words, and the purpose of the test data would be lost.
+
+d)
+
+Not every iteration improved the overall accuracy. That being said, after 3 iterations, the overall accuracy made net improvement.
+
+The same is true of the known, and novel counts.
+
+However, the seen count improved after each iteration. This could be either a coincidence, or an actual improvement in the model, since at each iteration we get better at predicting the raw data, and the seen words are tagged based on what we computed in raw.
+
+e)
+
+EM helped by allowing us to extrapolate additional training data from an unlabeled data set. By getting initial probabilities from train, we could make predictions on raw, and then use those predictions to get better initial probabilities. By iterating multiple times, we improved our accuracy on the raw data, and made it even more useful.
+
+f)
+
+EM's ability to predict is based on the initial probabilities it is fed. If for whatever reason the probs from train and test did not closely match the probs from raw, we would end up hurting ourselves by trying to use raw as evidence. In other words, if raw is a less generalizable dataset than train, it won't help us and could hurt us.
+
+The data are also not perfect. A little bit of natural variance could cause EM to get incorrect probabilities. If the smoothing is not strong enough, it could overfit the data and not generalize well to the test set.
+
+g)
+
+I don't believe that I have ever eaten more than 1 ice cream in a single day. It's possible that I may have eaten 2 on some forgotten occasion. I tend to have ice cream fairly rarely as I cannot eat eggs and about 50% of all ice creams are made with eggs. That being said, I do really like it.

@@ -1,3 +1,20 @@
-Tagging accuracy (Viterbi decoding): 94.09% (known: 96.81% novel: 65.84%)
-Perplexity per Viterbi-tagged test word: 864.609
-Tagging accuracy (posterior decoding): 94.16% (known: 96.84% novel: 66.41%
+Tagging accuracy (Viterbi decoding): 94.17% (known: 96.54% seen: 62.86% novel: 65.65%)
+Perplexity per Viterbi-tagged test word: 960.147
+
+Iteration 0: Perplexity per untagged raw word: 1007.43
+
+Tagging accuracy (Viterbi decoding): 94.28% (known: 96.52% seen: 68.64% novel: 66.84%)
+Perplexity per Viterbi-tagged test word: 941.445
+
+Iteration 1: Perplexity per untagged raw word: 613.30
+
+Tagging accuracy (Viterbi decoding): 94.19% (known: 96.53% seen: 68.74% novel: 65.59%)
+Perplexity per Viterbi-tagged test word: 936.853
+
+Iteration 2: Perplexity per untagged raw word: 609.13
+
+Tagging accuracy (Viterbi decoding): 94.21% (known: 96.55% seen: 68.78% novel: 65.70%)
+Perplexity per Viterbi-tagged test word: 935.864
+
+Iteration 3: Perplexity per untagged raw word: 608.55
+
