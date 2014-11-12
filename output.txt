@@ -1,2 +1,3 @@
-Tagging accuracy (Viterbi decoding): 94.09% (known: 96.82% novel: 65.80%)
-Perplexity per Viterbi-tagged test word: 864.905
+Tagging accuracy (Viterbi decoding): 94.09% (known: 96.81% novel: 65.84%)
+Perplexity per Viterbi-tagged test word: 864.609
+Tagging accuracy (posterior decoding): 94.16% (known: 96.84% novel: 66.41%

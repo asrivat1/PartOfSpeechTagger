@@ -50,4 +50,18 @@ We also improved by 712.594 in perplexity, which is very substantial.
 Problem 5:
 ----------
 
+After adding posterior decoding, I got the following results for entest:
+
+Tagging accuracy (Viterbi decoding): 94.09% (known: 96.81% novel: 65.84%)
+Perplexity per Viterbi-tagged test word: 864.609
+Tagging accuracy (posterior decoding): 94.16% (known: 96.84% novel: 66.41%
+
+As we can see, the posterior decoder does just marginally better overall, with hardly any difference for known words, and about a 0.57 percentage point improvement for novel words. The program as a whole runs a bit slower but not by enough to suggest that the posterior decoding is taking significantly longer than the Viterbi tagging.
+
+On the ice-cream set, I noticed that my implementation gives exactly the same output as the Excel sheet on the first iteration. However, this output is actually not as good as the Viterbi tagger, oddly enough. It seems that this is an outlier possibly caused by a small data set, though, as forwards-backwards did outperform Viterbi on the entest data.
+
+
+Problem 6:
+----------
+
 
